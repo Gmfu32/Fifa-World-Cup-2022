@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup 2022 - Match Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff; 
+            padding-top: 70px; 
+        }
+        .header-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .main-nav {
+            background-color: #581c87; 
+            color: #ffffff;
+            padding: 0.5rem 0; 
+            display: flex;
+            align-items: center;
+        }
+        .main-nav-content { 
+            width: 100%;
+            max-width: 1280px; 
+            margin: 0 auto;
+            padding: 0 1rem; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+        }
+        .main-nav-logo img {
+            height: 48px; 
+            width: auto;  
+        }
+        .main-nav-links {
+            display: flex;
+            gap: 1.25rem; 
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-left: 1.5rem; 
+            margin-right: auto; 
+        }
+        .main-nav-links a:hover {
+            color: #c7d2fe; 
+        }
+        .main-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            font-size: 1.25rem; 
+        }
+        .main-nav-actions a:hover {
+            color: #c7d2fe;
+        }
+        .container { 
+            max-width: 800px;
+            margin: 2rem auto; 
+            padding: 2rem;
+            background-color: #f9fafb; 
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04); 
+        }
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .btn-primary {
+            background-color: #5b21b6; 
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-primary:hover {
+            background-color: #4c1d95; 
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: translateY(0px);
+        }
+        .result-bar-container { 
+            padding: 1.25rem;
+            border: 1px solid #581c87; 
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            background-color: #581c87; 
+            color: #ffffff; 
+        }
+        .result-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; 
+            flex: 1; 
+        }
+        .team-info .font-semibold { 
+            color: #ffffff;
+        }
+        .team-info.justify-end {
+            justify-content: flex-end;
+        }
+        .team-flag-img { 
+            width: 32px;  
+            height: 20px; 
+            border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.3); 
+            object-fit: cover;
+        }
+        .score-details-container { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 1rem; 
+        }
+        .score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff; 
+        }
+        .match-date-time { 
+            font-size: 0.8rem;
+            color: #e9d5ff; 
+            margin-top: 0.25rem;
+        }
+        .error-message {
+            color: #c81e1e;
+            background-color: #fee2e2;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid #fca5a5;
+            text-align: center;
+            font-weight: 500;
+        }
+        .loading-spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: #5b21b6; 
+            animation: spin 1s ease infinite;
+            margin: 2.5rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .footer-text {
+            color: #4b5563; 
+        }
+        .page-header { 
+             margin-bottom: 2.5rem; 
+             text-align: center;
+        }
+        .page-header h1 { 
+            font-size: 2.25rem; 
+            line-height: 2.5rem; 
+            font-weight: 800; 
+            color: #1f2937; 
+        }
+         .page-header p { 
+            font-size: 1.125rem; 
+            line-height: 1.75rem; 
+            color: #4b5563; 
+            margin-top: 0.5rem; 
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header-fixed">
+        <nav class="main-nav">
+            <div class="main-nav-content"> 
+                <div class="main-nav-logo">
+                    <img src="{{ url_for('static', filename='images/qatar_logo-rs.png') }}" 
+                         alt="FIFA World Cup Qatar 2022 Logo"
+                         onerror="this.alt='Logo Error'; this.style.backgroundColor='#ccc'; this.style.width='100px'; this.style.height='48px'; this.src=''; this.style.display='inline-block'; this.textContent='Local Logo Error';">
+                </div>
+                <div class="main-nav-links">
+                    <a href="#">SCORES & FIXTURES</a>
+                    <a href="#">KNOCKOUT & GROUPS</a>
+                    <a href="#">TEAMS</a>
+                    <a href="#">HIGHLIGHTS</a>
+                    <a href="#">NEWS</a>
+                </div>
+                <div class="main-nav-actions">
+                    <a href="#" aria-label="Search"><i class="fas fa-search"></i></a>
+                    <a href="#" aria-label="User Profile"><i class="fas fa-user"></i></a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <header class="page-header"> 
+            <h1>FIFA World Cup 2022</h1>
+            <p>Match Results Viewer</p>
+        </header>
+
+        <form id="matchForm" method="POST" action="{{ url_for('get_match_result') }}" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="team1" class="block text-sm font-medium text-gray-700 mb-1">Team 1:</label>
+                    <select id="team1" name="team1" class="form-select mt-1 block w-full py-2.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" required>
+                        <option value="" disabled selected>Select Team 1</option>
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="team2" class="block text-sm font-medium text-gray-700 mb-1">Team 2:</label>
+                    <select id="team2" name="team2" class="form-select mt-1 block w-full py-2.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" required>
+                        <option value="" disabled selected>Select Team 2</option>
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="text-center pt-2">
+                <button type="submit" class="btn-primary">
+                    Show Result
+                </button>
+            </div>
+        </form>
+
+        <div id="loadingSpinner" class="hidden loading-spinner"></div>
+
+        <div id="resultArea" class="mt-8">
+            {% if result %}
+                {% if result.error %}
+                    <div class="error-message">
+                        <p>{{ result.error }}</p>
+                    </div>
+                {% else %}
+                    <h2 class="text-2xl font-semibold mb-4 text-center text-gray-700">Match Result</h2> 
+                    <div class="result-bar-container">
+                        <div class="result-bar">
+                            <div class="team-info">
+                                {% if result.team1_flag_filename %}
+                                <img src="{{ url_for('static', filename='images/flags/' + result.team1_flag_filename) }}" 
+                                     alt="{{ result.team1 }} flag" class="team-flag-img"
+                                     onerror="this.alt='Flag Error: {{ result.team1_flag_filename }}'; this.style.display='inline-block'; this.style.width='32px'; this.style.height='20px'; this.style.border='1px solid red'; this.src='';"> 
+                                {% else %}
+                                    <span class="team-flag-img" style="display:inline-block; width:32px; height:20px; border:1px solid #ccc; text-align:center; line-height:20px; font-size:10px;">?</span>
+                                {% endif %}
+                                <span class="font-semibold text-xl">{{ result.team1 }}</span> 
+                            </div>
+                            <div class="score-details-container">
+                                <div class="score">
+                                    {{ result.score1 }} - {{ result.score2 }}
+                                </div>
+                                <div class="match-date-time">
+                                    {{ result.date }} - {{ result.hour }}
+                                </div>
+                            </div>
+                            <div class="team-info justify-end">
+                                <span class="font-semibold text-xl text-right">{{ result.team2 }}</span> 
+                                {% if result.team2_flag_filename %}
+                                <img src="{{ url_for('static', filename='images/flags/' + result.team2_flag_filename) }}" 
+                                     alt="{{ result.team2 }} flag" class="team-flag-img"
+                                     onerror="this.alt='Flag Error: {{ result.team2_flag_filename }}'; this.style.display='inline-block'; this.style.width='32px'; this.style.height='20px'; this.style.border='1px solid red'; this.src='';">
+                                {% else %}
+                                     <span class="team-flag-img" style="display:inline-block; width:32px; height:20px; border:1px solid #ccc; text-align:center; line-height:20px; font-size:10px;">?</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="text-center py-8 mt-12 text-sm footer-text">
+        <p>&copy; {{ year }} FIFA World Cup Match Viewer. Data for illustrative purposes.</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('matchForm');
+        const resultArea = document.getElementById('resultArea');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                if (resultArea) resultArea.innerHTML = '';
+                if (loadingSpinner) loadingSpinner.classList.remove('hidden');
+
+                const team1Select = document.getElementById('team1');
+                const team2Select = document.getElementById('team2');
+                if (team1Select && team2Select && team1Select.value === team2Select.value && team1Select.value !== "") {
+                    event.preventDefault();
+                    if (loadingSpinner) loadingSpinner.classList.add('hidden');
+                    if (resultArea) {
+                        resultArea.innerHTML = `
+                            <div class="error-message">
+                                <p>Please select two different teams.</p>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+            });
+        }
+
+        window.addEventListener('load', function() {
+            if (resultArea && resultArea.innerHTML.trim() !== '') {
+                 if (loadingSpinner) loadingSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
