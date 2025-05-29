@@ -1,3 +1,4 @@
+# importing libraries
 from flask import Flask, render_template, request
 import pandas as pd
 import os 
@@ -5,6 +6,7 @@ import datetime
 
 app = Flask(__name__)
 
+# converting the date col
 def format_time_to_ampm(time_str):
     if not isinstance(time_str, str) or ':' not in time_str:
         return "N/A" 
@@ -16,6 +18,7 @@ def format_time_to_ampm(time_str):
         return time_str 
 
 
+# loading the CSV file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_FILE_PATH = os.path.join(BASE_DIR, 'Fifa_world_cup_matches.csv')
 
@@ -23,7 +26,7 @@ try:
     df = pd.read_csv(CSV_FILE_PATH)
     print(f"Successfully loaded CSV: {CSV_FILE_PATH}")
 
-    # Clean team names for consistent matching
+    # clean team names for consistent matching
     if 'team1' in df.columns:
         df['team1'] = df['team1'].str.strip()
     if 'team2' in df.columns:
@@ -40,7 +43,7 @@ try:
     if 'number of goals team2' in df.columns:
         df['number of goals team2'] = pd.to_numeric(df['number of goals team2'], errors='coerce').fillna(0).astype(int)
 
-    # Populate teams_list for dropdowns
+    # populate teams_list for dropdowns
     if 'team1' in df.columns and 'team2' in df.columns:
         unique_team_names_team1 = df['team1'].dropna().unique()
         unique_team_names_team2 = df['team2'].dropna().unique()
